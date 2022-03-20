@@ -9,6 +9,8 @@ public class LoadingAccounts {
 
     private String arquivoNome = null;
 
+    private int cont = 0;
+
 
     public Conta[] getConta(){
         return this.contas;
@@ -19,18 +21,16 @@ public class LoadingAccounts {
         contas = new Conta[100];
         String[] breakString = new String[3];
 
-        int cont = 0;
-
         arquivoNome = path;
 
         try(Scanner scan = new Scanner(file)){
             while(scan.hasNextLine()){
                 breakString = scan.nextLine().split(";");
-                contas[cont] = new Conta();
-                
-                contas[cont].setNumeroConta(Integer.parseInt(breakString[0]));
-                contas[cont].setCpf(breakString[1]);
-                contas[cont].setSaldo(Double.parseDouble(breakString[2]));
+                contas[cont] = new Conta(
+                    Integer.parseInt(breakString[0]),
+                    breakString[1],
+                    Double.parseDouble(breakString[2])
+                );
                 
                 cont++;
             }            
@@ -70,7 +70,10 @@ public class LoadingAccounts {
         System.err.println("Deseja depositar durante a criação? se não digite zero, se sim informe o valor: ");
         sal = scan.nextDouble();
 
-        
+
+        contas[cont] = new Conta(conta, cp, sal);
+
+        scan.close();
     }
 
 
