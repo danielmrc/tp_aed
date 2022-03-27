@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        GeraArquivo fazArquivo = new GeraArquivo();
+        fazArquivo.gerar("teste.txt");
 
         Menu();       
     }
@@ -18,14 +20,14 @@ public class App {
             System.out.println("-------- Escolha alguma das opções abaixo ---------\n" 
             + "1 - Carregar dados \n"
             + "2 - Gerar relatório \n"
-            + "3 - Criar uma conta"
+            + "3 - Criar uma conta \n"
             + "4 - Sair");
             op = scan.nextInt();
 
             switch(op){
                 case 1:
                     System.out.println("Informe o nome do arquivo: ");
-                    nomeArquivo = scan.nextLine();
+                    nomeArquivo = scan.next();
                     controller.charge(nomeArquivo);
                 break;
                 case 2:
@@ -35,7 +37,7 @@ public class App {
                     controller.criarConta();
 
             }
-        }while(op != 3);
+        }while(op != 4);
 
         scan.close();
     }

@@ -18,12 +18,14 @@ public class LoadingAccounts {
 
     public void charge(String path){
         File file = new File(path);
-        contas = new Conta[100];
         String[] breakString = new String[3];
+        int numeroContas;
 
         arquivoNome = path;
 
         try(Scanner scan = new Scanner(file)){
+            numeroContas = Integer.parseInt(scan.nextLine());
+            contas = new Conta[numeroContas +50];
             while(scan.hasNextLine()){
                 breakString = scan.nextLine().split(";");
                 contas[cont] = new Conta(
@@ -81,7 +83,7 @@ public class LoadingAccounts {
 
         try(FileWriter write = new FileWriter(arquivoNome)){
             for(Conta conta: contas){
-                write.append(conta.getNumeroConta() + ";" + conta.getCpf() + ";" + conta.getSaldo());
+                write.write(conta.getNumeroConta() + ";" + conta.getCpf() + ";" + conta.getSaldo() + "\n");
             }
         }catch(FileNotFoundException e1){
             System.out.println("Arquivo informado não encontrado!");
