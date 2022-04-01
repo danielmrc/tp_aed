@@ -2,21 +2,19 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.util.Random;
 
 public class LoadingAccounts {
 
-    private Conta[] contas = null;
+    private Random sorteio = new Random(43);
 
     private String arquivoNome = null;
 
     private int cont = 0;
 
+    public Conta[] charge(String path){
+        Conta[] contas = null;
 
-    public Conta[] getConta(){
-        return this.contas;
-    }
-
-    public void charge(String path){
         File file = new File(path);
         String[] breakString = new String[3];
         int numeroContas;
@@ -24,10 +22,10 @@ public class LoadingAccounts {
         arquivoNome = path;
 
         try(Scanner scan = new Scanner(file)){
-            numeroContas = Integer.parseInt(scan.nextLine());
+            numeroContas = scan.nextInt();
             contas = new Conta[numeroContas +50];
             while(scan.hasNextLine()){
-                breakString = scan.nextLine().split(";");
+                breakString = scan.next().split(";");
                 contas[cont] = new Conta(
                     Integer.parseInt(breakString[0]),
                     breakString[1],
@@ -41,10 +39,11 @@ public class LoadingAccounts {
         }catch(Exception e){
             System.out.println("Ops, Algo deu errado no carregamento das classes através dos arquivos!");
         }
-    }
+    return contas;
+}
 
 
-    public void gerarRelatorio(){
+    public void gerarRelatorio(Conta[] contas){
     
         for(Conta conta: contas){
             if(conta != null){
@@ -58,7 +57,7 @@ public class LoadingAccounts {
     }
 
 
-    public void criarConta(){
+    public void criarConta(Conta[] contas){
         int conta;
         String cp;
         double sal;
@@ -68,8 +67,8 @@ public class LoadingAccounts {
         System.out.println("Informe o número da conta: ");
         conta = scan.nextInt();
         System.out.println("Informe seu Cpf: ");
-        cp = scan.nextLine();
-        System.err.println("Deseja depositar durante a criação? se não digite zero, se sim informe o valor: ");
+        cp = scan.next();
+        System.out.println("Deseja depositar durante a criação? se não digite zero, se sim informe o valor: ");
         sal = scan.nextDouble();
 
 
@@ -79,9 +78,10 @@ public class LoadingAccounts {
     }
 
 
-    public void salvar(){
+    public void salvar(Conta[] contas){
 
         try(FileWriter write = new FileWriter(arquivoNome)){
+            write.write(contas.length + "\n");
             for(Conta conta: contas){
                 write.write(conta.getNumeroConta() + ";" + conta.getCpf() + ";" + conta.getSaldo() + "\n");
             }
@@ -91,6 +91,27 @@ public class LoadingAccounts {
             System.out.println("Algo deu errado ao tentar escrever o arquivo!");
         }
         
+    }
+
+
+    public int[] gerarNumeroConta(int tamanho, double bagunca){
+        int[] numeroContas = new int[tamanho];
+
+        for(int i = 0; i < numeroContas.length; i++){
+            numeroContas[i] = i +1;
+        }
+
+        int vezes = (int)(bagunca * tamanho);
+
+        for(int i = 0; i < vezes; i++){
+            int pos1 = sorteio.nextInt(tamanho);
+            int pos2 = sorteio.nextInt(tamanho);
+            int aux = numeroContas[pos1];
+            numeroContas[pos1] = numeroContas[pos2];
+            numeroContas[pos2] = aux;
+        }
+
+        return numeroContas;
     }
 
 

@@ -1,9 +1,11 @@
 import java.util.Scanner;
 
 public class App {
+
+    public static Conta[] contas;
     public static void main(String[] args) throws Exception {
-        GeraArquivo fazArquivo = new GeraArquivo();
-        fazArquivo.gerar("teste.txt");
+        //GeraArquivo fazArquivo = new GeraArquivo();
+        //fazArquivo.gerar("teste.txt");
 
         Menu();       
     }
@@ -28,14 +30,17 @@ public class App {
                 case 1:
                     System.out.println("Informe o nome do arquivo: ");
                     nomeArquivo = scan.next();
-                    controller.charge(nomeArquivo);
+                    contas = controller.charge(nomeArquivo);
                 break;
                 case 2:
-                    controller.gerarRelatorio();
+                    controller.gerarRelatorio(contas);
                 break;
                 case 3:
-                    controller.criarConta();
-
+                    controller.criarConta(contas);
+                break;
+                default:
+                    controller.salvar(contas);
+                break;        
             }
         }while(op != 4);
 
