@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class LoadingAccounts {
 
-    private Random sorteio = new Random(43);
+    private Random sorteio = new Random(System.currentTimeMillis());
 
     private String arquivoNome = null;
 
@@ -15,6 +15,7 @@ public class LoadingAccounts {
     public Conta[] charge(String path){
         Conta[] contas = null;
 
+        String line;
         File file = new File(path);
         String[] breakString = new String[3];
         int numeroContas;
@@ -22,22 +23,25 @@ public class LoadingAccounts {
         arquivoNome = path;
 
         try(Scanner scan = new Scanner(file)){
-            numeroContas = scan.nextInt();
+            numeroContas = Integer.parseInt(scan.next());
             contas = new Conta[numeroContas +50];
             while(scan.hasNextLine()){
-                breakString = scan.next().split(";");
-                contas[cont] = new Conta(
-                    Integer.parseInt(breakString[0]),
-                    breakString[1],
-                    Double.parseDouble(breakString[2])
-                );
-                
-                cont++;
+                line = scan.next();
+                if(!line.isBlank() || !line.equals("")){
+                    breakString = line.split(";");
+                    contas[cont] = new Conta(
+                        Integer.parseInt(breakString[0]),
+                        breakString[1],
+                        Double.parseDouble(breakString[2])
+                    );
+                    
+                    cont++;
+                }
             }            
         }catch(FileNotFoundException e){
             System.out.println("Arquivo não encontrado!!");
         }catch(Exception e){
-            System.out.println("Ops, Algo deu errado no carregamento das classes através dos arquivos!");
+            e.printStackTrace();
         }
     return contas;
 }
@@ -57,38 +61,25 @@ public class LoadingAccounts {
     }
 
 
-    public void criarConta(Conta[] contas){
-        int conta;
-        String cp;
-        double sal;
-
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("Informe o número da conta: ");
-        conta = scan.nextInt();
-        System.out.println("Informe seu Cpf: ");
-        cp = scan.next();
-        System.out.println("Deseja depositar durante a criação? se não digite zero, se sim informe o valor: ");
-        sal = scan.nextDouble();
-
-
+    public void criarConta(Conta[] contas, int conta, String cp, double sal){     
         contas[cont] = new Conta(conta, cp, sal);
-
-        scan.close();
+        cont++;
     }
 
 
     public void salvar(Conta[] contas){
 
         try(FileWriter write = new FileWriter(arquivoNome)){
-            write.write(contas.length + "\n");
-            for(Conta conta: contas){
-                write.write(conta.getNumeroConta() + ";" + conta.getCpf() + ";" + conta.getSaldo() + "\n");
+            write.write(cont + "\n");
+            for(int i = 0; i < cont -1; i++){
+                if(contas[i] != null)
+                    write.write(contas[i].getNumeroConta() + ";" + contas[i].getCpf() + ";" + contas[i].getSaldo() + "\n");
             }
+            write.write(contas[cont -1].getNumeroConta() + ";" + contas[cont -1].getCpf() + ";" + contas[cont -1].getSaldo());
         }catch(FileNotFoundException e1){
             System.out.println("Arquivo informado não encontrado!");
         }catch(Exception e2){
-            System.out.println("Algo deu errado ao tentar escrever o arquivo!");
+            e2.printStackTrace();
         }
         
     }
@@ -116,5 +107,42 @@ public class LoadingAccounts {
 
 
 
+    public Conta[] quickSort(Conta[]contas, int inicio, int fim){
+        if(fim == Integer.MIN_VALUE)
+            fim = cont -1;
+
+        int part;
+        if(inicio < fim){
+            part = particao(contas, inicio, fim);
+            quickSort(contas, inicio, part -1);
+            quickSort(contas, part +1, fim);
+        }else{
+            return contas;
+        }
+        
+        return null;
+    }
+
+    public int particao(Conta[]contas, int inicio, int fim){
+        int pivot = contas[fim].getNumeroConta();
+        int part = inicio -1;
+        Conta aux;
+
+        for (int i = inicio; i < cont -3; i++) {
+            if(contas[i].getNumeroConta() < pivot){
+                part = part + 1;
+                aux = contas[part];
+                contas[part] = contas[i];
+                contas[i] = aux;
+            }
+        }
+
+        part++;
+        aux = contas[fim];
+        contas[fim] = contas[part];
+        contas[part] = aux;
+
+        return part;
+    }
     
 }
