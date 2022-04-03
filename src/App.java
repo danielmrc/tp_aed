@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class App {
 
-    public static LoadingAccounts controller = new LoadingAccounts();
+    public static ManageAccounts controller = new ManageAccounts();
 
     public static Scanner scan = new Scanner(System.in);
 
@@ -24,12 +24,13 @@ public class App {
         int op = 0;
 
         do{
-            System.out.println("-------- Escolha alguma das opções abaixo ---------\n" 
+            System.out.println("\n-------- Escolha alguma das opções abaixo ---------\n" 
             + "1 - Carregar dados \n"
             + "2 - Gerar relatório \n"
             + "3 - Criar uma conta \n"
             + "4 - Exibir de maneira ordenada pelo número da conta \n"
-            + "5 - Sair");
+            + "5 - Buscar conta pelo número \n"
+            + "6 - Sair");
             op = Integer.parseInt(scan.nextLine());
 
             switch(op){
@@ -48,6 +49,9 @@ public class App {
                     exibeOrdenado(contas);
                 break;
                 case 5:
+                    busca();
+                break;
+                case 6:
                     op = 0;
                 break;
                 default:
@@ -57,6 +61,25 @@ public class App {
         }while(op != 0);
         scan.close();
         controller.salvar(contas);
+    }
+
+
+    static void busca(){
+        int num;
+        
+        System.out.println("Informe o numero da conta: ");
+        num = Integer.parseInt(scan.nextLine());
+
+        Conta conta = controller.buscaConta(contas, num);
+        
+        if(conta != null){
+            System.out.println("Numero conta: " + conta.getNumeroConta());
+            System.out.println("Cpf: " + conta.getCpf());
+            System.out.println("Saldo: " + conta.getSaldo() + "\n");
+        }else{
+            System.out.println("Conta nao encontrada!!");
+        }
+
     }
 
 
@@ -85,5 +108,5 @@ public class App {
         }
     }
 
-    
+
 }

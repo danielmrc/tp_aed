@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.Random;
 
-public class LoadingAccounts {
+public class ManageAccounts {
 
     private Random sorteio = new Random(System.currentTimeMillis());
 
@@ -119,8 +119,8 @@ public class LoadingAccounts {
         }else{
             return contas;
         }
-        
-        return null;
+
+        return contas;
     }
 
     public int particao(Conta[]contas, int inicio, int fim){
@@ -128,7 +128,7 @@ public class LoadingAccounts {
         int part = inicio -1;
         Conta aux;
 
-        for (int i = inicio; i < cont -3; i++) {
+        for (int i = inicio; i < cont -1; i++) {
             if(contas[i].getNumeroConta() < pivot){
                 part = part + 1;
                 aux = contas[part];
@@ -143,6 +143,18 @@ public class LoadingAccounts {
         contas[part] = aux;
 
         return part;
+    }
+
+
+    public Conta buscaConta(Conta[] contas, int num){
+        Conta conta = null;
+
+        for(var con: contas){
+            if(con != null && con.getNumeroConta() == num)
+                conta = con;
+        }
+
+        return conta;
     }
     
 }
