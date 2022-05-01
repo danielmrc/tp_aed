@@ -1,12 +1,16 @@
 import java.util.Scanner;
 
+import banco.Conta;
+import banco.ManageAccounts;
+import lista.ListaConta;
+
 public class App {
 
     public static ManageAccounts controller = new ManageAccounts();
 
     public static Scanner scan = new Scanner(System.in);
 
-    public static Conta[] contas;
+    public static ListaConta contas;
     public static void main(String[] args) throws Exception {
         //professor, quando estiver testando se usar sempre que iniciar, vai sobrescrever as contas criadas manualmente e salvas no fim do fluxo
         System.out.println("Deseja gerar arquivo inicial com 100 contas aleatórias? (S - para sim, N - para nao)");
@@ -46,7 +50,7 @@ public class App {
                     criarConta();
                 break;
                 case 4:
-                    exibeOrdenado(contas);
+                    //exibeOrdenado(contas);
                 break;
                 case 5:
                     busca();
@@ -79,7 +83,7 @@ public class App {
         }else{
             System.out.println("Conta nao encontrada!!");
         }
-
+        
     }
 
 
@@ -94,7 +98,8 @@ public class App {
         System.out.println("Deseja depositar durante a criação? se não digite zero, se sim informe o valor: ");
         sal = Double.parseDouble(scan.nextLine());
 
-        controller.criarConta(contas, conta, cp, sal);
+        Conta novaConta = new Conta(conta, cp, sal);
+        controller.criarConta(contas, novaConta);
     }
 
 

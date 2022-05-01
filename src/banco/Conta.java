@@ -1,3 +1,4 @@
+package banco;
 public class Conta{
     private int numeroConta;
     private String cpf;
@@ -39,6 +40,5 @@ public class Conta{
     public void setSaldo(double saldo){
         this.saldo = saldo;
     }
-
 
 }

@@ -1,8 +1,11 @@
+package banco;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.Random;
+
+import lista.ListaConta;
 
 public class ManageAccounts {
 
@@ -12,8 +15,8 @@ public class ManageAccounts {
 
     private int cont = 0;
 
-    public Conta[] charge(String path){
-        Conta[] contas = null;
+    public ListaConta charge(String path){
+        ListaConta contas = new ListaConta();
 
         String line;
         File file = new File(path);
@@ -24,16 +27,15 @@ public class ManageAccounts {
 
         try(Scanner scan = new Scanner(file)){
             numeroContas = Integer.parseInt(scan.next());
-            contas = new Conta[numeroContas +50];
             while(scan.hasNextLine()){
                 line = scan.next();
                 if(!line.isBlank() || !line.equals("")){
                     breakString = line.split(";");
-                    contas[cont] = new Conta(
+                    contas.inserir(new Conta(
                         Integer.parseInt(breakString[0]),
                         breakString[1],
                         Double.parseDouble(breakString[2])
-                    );
+                    ));
                     
                     cont++;
                 }
@@ -47,29 +49,20 @@ public class ManageAccounts {
 }
 
 
-    public void gerarRelatorio(Conta[] contas){
-    
-        for(Conta conta: contas){
-            if(conta != null){
-                System.out.println("Numero conta: " + conta.getNumeroConta());
-                System.out.println("Cpf: " + conta.getCpf());
-                System.out.println("Saldo: " + conta.getSaldo() + "\n");
-            }            
-        }
-    System.out.println();
-
+    public void gerarRelatorio(ListaConta contas){
+        contas.listar();
+        System.out.println();
     }
 
 
-    public void criarConta(Conta[] contas, int conta, String cp, double sal){     
-        contas[cont] = new Conta(conta, cp, sal);
-        cont++;
+    public void criarConta(ListaConta contas, Conta nova){     
+        contas.inserir(nova);
     }
 
 
-    public void salvar(Conta[] contas){
+    public void salvar(ListaConta contas){
 
-        try(FileWriter write = new FileWriter(arquivoNome)){
+        /*try(FileWriter write = new FileWriter(arquivoNome)){
             write.write(cont + "\n");
             for(int i = 0; i < cont -1; i++){
                 if(contas[i] != null)
@@ -81,7 +74,7 @@ public class ManageAccounts {
         }catch(Exception e2){
             e2.printStackTrace();
         }
-        
+        */
     }
 
 
@@ -146,13 +139,10 @@ public class ManageAccounts {
     }
 
 
-    public Conta buscaConta(Conta[] contas, int num){
+    public Conta buscaConta(ListaConta contas, int num){
         Conta conta = null;
 
-        for(var con: contas){
-            if(con != null && con.getNumeroConta() == num)
-                conta = con;
-        }
+        conta = contas.retirar(num);
 
         return conta;
     }
