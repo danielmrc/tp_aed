@@ -3,20 +3,20 @@ package banco;
 import data.Data;
 
 
-public class Operacoes {
+public class Operacao {
     private int numConta;
     private int codOperacao;
     private double valor;
     private Data data;
 
-    public Operacoes() {
+    public Operacao() {
         this.numConta = 0;
         this.codOperacao = 0;
         this.valor = 0;
         this.data = null;
     }
 
-    public Operacoes(int numConta, int codOperacao, double valor, Data data){
+    public Operacao(int numConta, int codOperacao, double valor, Data data){
         this.numConta = numConta;
         this.codOperacao = codOperacao;
         this.valor = valor;

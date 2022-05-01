@@ -2,12 +2,13 @@ package banco;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.util.Random;
 
 import lista.ListaConta;
+import fila.FilaOperacao;
+import data.Data;
 
-public class ManageAccounts {
+public class ControleConta {
 
     private Random sorteio = new Random(System.currentTimeMillis());
 
@@ -15,7 +16,7 @@ public class ManageAccounts {
 
     private int cont = 0;
 
-    public ListaConta charge(String path){
+    public ListaConta chargeContas(String path){
         ListaConta contas = new ListaConta();
 
         String line;
@@ -26,7 +27,7 @@ public class ManageAccounts {
         arquivoNome = path;
 
         try(Scanner scan = new Scanner(file)){
-            numeroContas = Integer.parseInt(scan.next());
+            //numeroContas = Integer.parseInt(scan.next());
             while(scan.hasNextLine()){
                 line = scan.next();
                 if(!line.isBlank() || !line.equals("")){
@@ -40,13 +41,13 @@ public class ManageAccounts {
                     cont++;
                 }
             }            
-        }catch(FileNotFoundException e){
+        }catch(FileNotFoundException e1){
             System.out.println("Arquivo não encontrado!!");
-        }catch(Exception e){
-            e.printStackTrace();
+        }catch(Exception e2){
+            e2.printStackTrace();
         }
-    return contas;
-}
+        return contas;
+    }
 
 
     public void gerarRelatorio(ListaConta contas){
@@ -61,20 +62,7 @@ public class ManageAccounts {
 
 
     public void salvar(ListaConta contas){
-
-        /*try(FileWriter write = new FileWriter(arquivoNome)){
-            write.write(cont + "\n");
-            for(int i = 0; i < cont -1; i++){
-                if(contas[i] != null)
-                    write.write(contas[i].getNumeroConta() + ";" + contas[i].getCpf() + ";" + contas[i].getSaldo() + "\n");
-            }
-            write.write(contas[cont -1].getNumeroConta() + ";" + contas[cont -1].getCpf() + ";" + contas[cont -1].getSaldo());
-        }catch(FileNotFoundException e1){
-            System.out.println("Arquivo informado não encontrado!");
-        }catch(Exception e2){
-            e2.printStackTrace();
-        }
-        */
+        contas.salvarLista(arquivoNome, contas, cont);
     }
 
 
@@ -146,5 +134,49 @@ public class ManageAccounts {
 
         return conta;
     }
+
+
+    public Operacao[] chargeOperacao(String path){
+        Operacao[] operacoes = null;
+
+        int contador = 0;
+
+        Data data;
+
+        String line;
+        File file = new File(path);
+        String[] breakString = new String[4];
+        String[] breakData = new String[3];
+        int numeroOperacoes;
+
+        arquivoNome = path;
+
+        try(Scanner scan = new Scanner(file)){
+            numeroOperacoes = Integer.parseInt(scan.next());
+            operacoes = new Operacao[numeroOperacoes];
+            while(scan.hasNextLine()){
+                line = scan.next();
+                if(!line.isBlank() || !line.equals("")){
+                    breakString = line.split(";");
+                    breakData = breakString[3].split("/");
+                    data = new Data(Integer.parseInt(breakData[0]), Integer.parseInt(breakData[1]), Integer.parseInt(breakData[2]));
+                    operacoes[contador] = new Operacao(
+                        Integer.parseInt(breakString[0]),
+                        Integer.parseInt(breakString[1]),
+                        Double.parseDouble(breakString[2]),
+                        data                        
+                    );
+                    
+                    contador++;
+                }
+            }            
+        }catch(FileNotFoundException e1){
+            System.out.println("Arquivo não encontrado!!");
+        }catch(Exception e2){
+            e2.printStackTrace();
+        }
+        return operacoes;
+    }
+
     
 }
