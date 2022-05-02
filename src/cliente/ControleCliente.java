@@ -48,7 +48,7 @@ public class ControleCliente {
     public void relacionaContas(ListaConta contas, Cliente[] clientes){
         for(var cliente: clientes){
             if(cliente != null)
-                cliente.setContas(contas.buscaContasCliente(cliente.getCpf(), contas));
+                cliente.setContas(contas.buscaContasCliente(cliente.getCpf()));
         }
     }
 

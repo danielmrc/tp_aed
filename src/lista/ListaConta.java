@@ -31,8 +31,11 @@ public class ListaConta {
         ElementoConta aux = primeiro;
         while(aux.getProximo() != null){
             aux = aux.getProximo();
-            if(aux.getDado().getNumeroConta() == numConta)
+            if(aux.getDado().getNumeroConta() == numConta){
+                aux.getAnterior().setProximo(aux.getProximo());
+                aux.getProximo().setAnterior(aux.getAnterior());
                 return aux.getDado();
+            }
             aux = aux.getProximo();    
         }
 
@@ -69,13 +72,13 @@ public class ListaConta {
         }
     }
 
-    public ListaConta buscaContasCliente(String cpf, ListaConta contas){
+    public ListaConta buscaContasCliente(String cpf){
         ElementoConta aux = primeiro;
 
         ListaConta contasDoCliente = new ListaConta();
 
         while(aux.getProximo() != null){          
-            if(aux.getProximo().getDado().getCpf() == cpf)
+            if(aux.getProximo().getDado().getCpf().equals(cpf))
                 contasDoCliente.inserir(aux.getProximo().getDado());
 
             aux = aux.getProximo();
@@ -90,10 +93,10 @@ public class ListaConta {
         
         while(auxConta.getProximo() != null){
             for(var operacao: operacoes){
-                if(auxConta != null)
-                    if(operacao.getNumConta() == auxConta.getProximo().getDado().getNumeroConta())
-                        auxConta.getProximo().getDado().getOperacoes().inserir(operacao);
+                if(operacao.getNumConta() == auxConta.getProximo().getDado().getNumeroConta())
+                    auxConta.getProximo().getDado().getOperacoes().inserir(operacao);
             }
+            auxConta = auxConta.getProximo();
         }
     }
 
@@ -103,6 +106,7 @@ public class ListaConta {
         while(auxConta.getProximo() != null){
             if(auxConta.getProximo().getDado().getNumeroConta() == numConta)
                 auxConta.getProximo().getDado().getOperacoes().extrato(numConta);
+            auxConta = auxConta.getProximo(); 
         }
     }
 

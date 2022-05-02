@@ -45,6 +45,7 @@ public class App {
             + "3 - Criar uma conta \n"
             + "4 - Consultar contas de um cliente \n"
             + "5 - Buscar conta pelo número \n"
+            + "6 - Ver extrato de uma conta \n"
             + "7 - Sair");
             op = Integer.parseInt(scan.nextLine());
 
@@ -82,13 +83,20 @@ public class App {
             }
         }while(op != 0);
         scan.close();
-        controllerContas.salvar(contas);
+        //trollerContas.salvar(contas);
     }
 
 
     static void consultarContas(){
+        String cpf;
+
+        System.out.println("Informe o cpf do titular: ");
+        cpf = scan.nextLine();
+
         for(var cliente: clientes){
-            cliente.getContas().listar();
+            if(cliente != null)
+                if(cliente.getCpf().equals(cpf))
+                    cliente.getContas().listar();
         }
     }
 
