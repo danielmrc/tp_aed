@@ -8,7 +8,6 @@ import lista.ListaConta;
 
 public class ControleCliente {
 
-    private String arquivoNome;
 
     private int cont = 0;
 
@@ -19,8 +18,6 @@ public class ControleCliente {
         File file = new File(path);
         String[] breakString = new String[2];
         int numeroClientes;
-
-        arquivoNome = path;
 
         try(Scanner scan = new Scanner(file)){
             numeroClientes = Integer.parseInt(scan.nextLine());

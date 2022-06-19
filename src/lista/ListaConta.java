@@ -4,9 +4,7 @@ import banco.Conta;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import fila.FilaOperacao;
 import banco.Operacao;
-import fila.ElementoOperacao;
 
 public class ListaConta {
     private ElementoConta primeiro;
@@ -31,12 +29,28 @@ public class ListaConta {
         ElementoConta aux = primeiro;
         while(aux.getProximo() != null){
             aux = aux.getProximo();
-            if(aux.getDado().getNumeroConta() == numConta){
+            if(aux == ultimo && aux.getDado().getNumeroConta() == numConta){
+                aux.getAnterior().setProximo(null);
+                ultimo = aux.getAnterior();
+                aux.setAnterior(null);
+                return aux.getDado();        
+            }else if(aux.getDado().getNumeroConta() == numConta){
                 aux.getAnterior().setProximo(aux.getProximo());
                 aux.getProximo().setAnterior(aux.getAnterior());
                 return aux.getDado();
-            }
-            aux = aux.getProximo();    
+            }              
+        }
+
+        return null;
+    }
+
+    public Conta consultar(int numConta){
+        ElementoConta aux = primeiro;
+        while(aux.getProximo() != null){
+            aux = aux.getProximo();
+            if(aux.getDado().getNumeroConta() == numConta){
+                return aux.getDado();
+            }              
         }
 
         return null;
@@ -100,6 +114,42 @@ public class ListaConta {
         }
     }
 
+    public void sacar(String cpf, int numConta, double valor){
+        ElementoConta aux = primeiro;
+        boolean achou = false;
+
+        while(aux.getProximo() != null){          
+            if(aux.getProximo().getDado().getNumeroConta() == numConta 
+            && aux.getProximo().getDado().getCpf().equals(cpf)){
+                achou = true;
+                aux.getProximo().getDado().sacar(valor);
+            }
+                
+            if(!achou)
+                System.out.println("Essa conta relacionada a esse cpf não existe!!");        
+            
+            aux = aux.getProximo();
+        }
+    }
+
+    public void depositar(String cpf, int numConta, double valor){
+        ElementoConta aux = primeiro;
+        boolean achou = false;
+
+        while(aux.getProximo() != null){          
+            if(aux.getProximo().getDado().getNumeroConta() == numConta
+            && aux.getProximo().getDado().getCpf().equals(cpf)){
+                achou = true;
+                aux.getProximo().getDado().depositar(valor);
+            }
+                
+            if(!achou)
+                System.out.println("Essa conta relacionada a esse cpf não existe!!");
+
+            aux = aux.getProximo();
+        }
+    }
+
     public void verExtrato(int numConta){
         ElementoConta auxConta = primeiro;
         
@@ -110,4 +160,26 @@ public class ListaConta {
         }
     }
 
+
+    public void executarOperacoes(ListaConta contas){
+        ElementoConta auxConta = primeiro;
+        
+        while(auxConta.getProximo() != null){
+            Conta conta = auxConta.getProximo().getDado();
+
+            Operacao op = auxConta.getProximo().getDado().getOperacoes().retirar();
+            
+            while(op != null){
+                if(conta != null && op != null){
+                    if(op.getCodOperacao() == 0)
+                        conta.depositar(op.getValor());
+                    if(op.getCodOperacao() == 1)
+                        conta.sacar(op.getValor());
+                }
+                op = auxConta.getProximo().getDado().getOperacoes().retirar();
+            }
+
+            auxConta = auxConta.getProximo(); 
+        }
+    }
 }

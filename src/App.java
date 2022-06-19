@@ -4,7 +4,6 @@ import banco.Conta;
 import banco.ControleConta;
 import cliente.ControleCliente;
 import lista.ListaConta;
-import fila.FilaOperacao;
 import cliente.Cliente;
 import banco.Operacao;
 
@@ -46,7 +45,8 @@ public class App {
             + "4 - Consultar contas de um cliente \n"
             + "5 - Buscar conta pelo número \n"
             + "6 - Ver extrato de uma conta \n"
-            + "7 - Sair");
+            + "7 - Localizar cliente \n"
+            + "8 - Sair");
             op = Integer.parseInt(scan.nextLine());
 
             switch(op){
@@ -75,6 +75,9 @@ public class App {
                     extrato();
                 break;
                 case 7:
+                    localizaCliente();
+                break;
+                case 8:
                     op = 0;
                 break;
                 default:
@@ -86,6 +89,80 @@ public class App {
         //trollerContas.salvar(contas);
     }
 
+    static void localizaCliente(){
+        System.out.println("Informe o cpf do cliente: ");
+        String cpf = scan.nextLine();
+
+        if(verificaCliente(cpf))
+            menuCliente(cpf);
+            else
+                System.out.println("Cpf do cliente não encontrado na base de dados");
+    }
+
+    public static void menuCliente(String cpf){
+        int op = Integer.MAX_VALUE;
+        do{
+            System.out.println("--------------------------");
+            System.out.println("1 - Verificar extrato de uma conta \n"
+            + "2 - Incluir uma nova conta \n"
+            + "3 - Realizar Saque \n"
+            + "4 - Realizar Depósito \n"
+            + "5 - Extrato de sua posição financeira \n"
+            + "6 - Sair");
+
+            op = Integer.parseInt(scan.nextLine());
+
+            switch(op){
+                case 1:
+                    System.out.println("Informe o número da conta: ");
+                    verificaExtratoCliente(Integer.parseInt(scan.nextLine()));
+                break;
+                case 2: 
+                    System.out.println("Se desejar depositar na criação da conta digite"
+                    + " a seguir, caso contrário digite 0");
+                    criarConta(cpf, Double.parseDouble(scan.nextLine()));
+                break;
+                case 3:
+                    System.out.println("Informe o numero da conta:");
+                    int numConta = Integer.parseInt(scan.nextLine());
+                    System.out.println("Informe o valor a ser sacado:");
+                    double valor = Double.parseDouble(scan.nextLine());
+                    realizarSaque(cpf, numConta, valor);
+                break;
+                case 4:
+                    System.out.println("Informe o numero da conta:");
+                    numConta = Integer.parseInt(scan.nextLine());
+                    System.out.println("Informe o valor a ser sacado:");
+                    valor = Double.parseDouble(scan.nextLine());
+                    realizarDeposito(cpf, numConta, valor);
+                break;
+                case 6:
+                    op = 0;
+                break;
+            }
+        }while(op != 0);
+    }
+
+    public static void realizarDeposito(String cpf, int numConta, double valor){
+        contas.depositar(cpf, numConta, valor);
+    }
+
+    public static void realizarSaque(String cpf, int numConta, double valor){
+        contas.sacar(cpf, numConta, valor);
+    }
+
+    public static void verificaExtratoCliente(int numConta){
+        contas.verExtrato(numConta);
+    }
+
+    static boolean verificaCliente(String cpf){
+        for(var cliente: clientes){
+            if(cliente != null)
+                if(cliente.getCpf().equals(cpf))
+                    return true;
+        }
+        return false;
+    }
 
     static void consultarContas(){
         String cpf;
@@ -113,7 +190,7 @@ public class App {
         System.out.println("Informe o numero da conta: ");
         num = Integer.parseInt(scan.nextLine());
 
-        Conta conta = controllerContas.buscaConta(contas, num);
+        Conta conta = controllerContas.consulta(contas, num);
         
         if(conta != null){
             System.out.println("Numero conta: " + conta.getNumeroConta());
@@ -123,6 +200,12 @@ public class App {
             System.out.println("Conta nao encontrada!!");
         }
         
+    }
+
+    public static void criarConta(String cpf, double saldo){
+        Conta novaConta = new Conta(controllerContas.gerarNumeroConta(100, 3.0)[0], cpf, saldo);
+        controllerContas.criarConta(contas, novaConta);
+        controllerCliente.relacionaContas(contas, clientes);
     }
 
 
@@ -139,6 +222,7 @@ public class App {
 
         Conta novaConta = new Conta(conta, cp, sal);
         controllerContas.criarConta(contas, novaConta);
+        controllerCliente.relacionaContas(contas, clientes);
     }
 
 

@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 
 import lista.ListaConta;
-import fila.FilaOperacao;
 import data.Data;
 
 public class ControleConta {
@@ -22,7 +21,6 @@ public class ControleConta {
         String line;
         File file = new File(path);
         String[] breakString = new String[3];
-        int numeroContas;
 
         arquivoNome = path;
 
@@ -126,11 +124,14 @@ public class ControleConta {
         return part;
     }
 
+    public void executarOperacoes(ListaConta contas){
+        contas.executarOperacoes(contas);
+    }
 
-    public Conta buscaConta(ListaConta contas, int num){
+    public Conta consulta(ListaConta contas, int num){
         Conta conta = null;
 
-        conta = contas.retirar(num);
+        conta = contas.consultar(num);
 
         return conta;
     }
