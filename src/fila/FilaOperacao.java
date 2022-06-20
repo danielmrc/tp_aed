@@ -43,7 +43,6 @@ public class FilaOperacao {
                     default: System.out.println("Código de operação desconhecido!!");
                     break;
                 }
-                System.out.println("Numero da conta: " + auxOperacao.getProximo().getDado().getNumConta());
                 System.out.println("Valor: " + auxOperacao.getProximo().getDado().getValor());
                 System.out.println("Data: " + auxOperacao.getProximo().getDado().getData().getData() + "\n\n");
             }

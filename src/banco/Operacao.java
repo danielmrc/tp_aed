@@ -8,6 +8,7 @@ public class Operacao {
     private int codOperacao;
     private double valor;
     private Data data;
+    private boolean realizada = false;
 
     public Operacao() {
         this.numConta = 0;
@@ -21,6 +22,14 @@ public class Operacao {
         this.codOperacao = codOperacao;
         this.valor = valor;
         this.data = data;
+    }
+
+    public Operacao(int numConta, int codOperacao, double valor, Data data, boolean r){
+        this.numConta = numConta;
+        this.codOperacao = codOperacao;
+        this.valor = valor;
+        this.data = data;
+        this.realizada = r;
     }
 
     public void setNumConta(int numConta){
@@ -53,6 +62,14 @@ public class Operacao {
 
     public Data getData(){
         return this.data;
+    }
+
+    public boolean getRealizada(){
+        return this.realizada;
+    }
+
+    public void setRealizada(boolean r){
+        this.realizada = r;
     }
     
 }

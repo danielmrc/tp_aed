@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import banco.Conta;
 import banco.ControleConta;
@@ -6,6 +8,9 @@ import cliente.ControleCliente;
 import lista.ListaConta;
 import cliente.Cliente;
 import banco.Operacao;
+import exception.NotFoundAccountException;
+//import fila.FilaOperacao;
+import banco.Admin;
 
 
 public class App {
@@ -18,7 +23,13 @@ public class App {
 
     public static Cliente[] clientes;
 
+    public static Admin[] admins;
+
     public static ListaConta contas;
+
+    public static int contCliente = 0;
+
+    public static int contOperacoes = 0;
 
     public static Operacao[] operacoes;
     public static void main(String[] args) throws Exception {
@@ -34,7 +45,7 @@ public class App {
 
     public static void Menu(){
     
-        String[] nomeArquivo = new String[3];
+        String[] nomeArquivo = new String[4];
         int op = 0;
 
         do{
@@ -46,21 +57,24 @@ public class App {
             + "5 - Buscar conta pelo número \n"
             + "6 - Ver extrato de uma conta \n"
             + "7 - Localizar cliente \n"
-            + "8 - Sair");
+            + "8 - Funções de administrador \n"
+            + "9 - Sair");
             op = Integer.parseInt(scan.nextLine());
 
             switch(op){
                 case 1:
-                    System.out.println("Informe o nome dos arquivos no formato: contas.txt;clientes.txt;operacoes.txt");
+                    System.out.println("Informe o nome dos arquivos no formato: contas.txt;clientes.txt;operacoes.txt;admin.txt");
                     nomeArquivo = scan.nextLine().split(";");
                     contas = controllerContas.chargeContas(nomeArquivo[0]);
                     clientes = controllerCliente.chargeClientes(nomeArquivo[1]);
                     operacoes = controllerContas.chargeOperacao(nomeArquivo[2]);
+                    admins = carregarAdmins(nomeArquivo[3]);
                     controllerCliente.relacionaContas(contas, clientes);
                     contas.relacionaOperacoes(contas, operacoes);
                 break;
                 case 2:
-                    controllerContas.gerarRelatorio(contas);
+                    //controllerContas.gerarRelatorio(contas);
+                    listarContas();
                 break;
                 case 3:                    
                     criarConta();
@@ -78,7 +92,10 @@ public class App {
                     localizaCliente();
                 break;
                 case 8:
-                    op = 0;
+                    menuAdmin();
+                break;
+                case 9:
+                     op = 0;
                 break;
                 default:
                     System.out.println("Informe uma opção válida!!");
@@ -87,6 +104,49 @@ public class App {
         }while(op != 0);
         scan.close();
         //trollerContas.salvar(contas);
+    }
+
+
+    static void menuAdmin(){
+        int op = 0;
+        System.out.println("Informe o número de cpf: ");
+        String cpf = scan.nextLine();
+        if(verificaAdmin(cpf)){
+            do{
+                System.out.println("--------------------------");
+                System.out.println("1 - Conta com maior saldo no momento \n"
+                + "2 - Saldo médio dos clientes\n"
+                + "3 - Dez clientes com maior saldo total \n"
+                + "4 - Sair");
+
+                op = Integer.parseInt(scan.nextLine());
+
+                switch(op){
+                    case 1:                       
+                        controllerCliente.maiorSaldo(clientes);
+                    break;
+                    case 2: 
+                        controllerCliente.saldoMedio(clientes);
+                    break;
+                    case 3:
+                        controllerCliente.clientesMaioresSaldos(clientes);
+                    break;
+                    case 4:
+                        op = 0;
+                    break;
+                    default:
+                        System.out.println("Informe uma opção válida!!");
+                    break;
+                }
+            }while(op != 0);
+        }
+    }
+
+    static void listarContas(){
+        for(var cliente:clientes){
+            if(cliente != null)
+                cliente.getContas().listar();
+        }
     }
 
     static void localizaCliente(){
@@ -100,7 +160,7 @@ public class App {
     }
 
     public static void menuCliente(String cpf){
-        int op = Integer.MAX_VALUE;
+        int op = 0;
         do{
             System.out.println("--------------------------");
             System.out.println("1 - Verificar extrato de uma conta \n"
@@ -115,7 +175,7 @@ public class App {
             switch(op){
                 case 1:
                     System.out.println("Informe o número da conta: ");
-                    verificaExtratoCliente(Integer.parseInt(scan.nextLine()));
+                    verificaExtratoCliente(cpf, Integer.parseInt(scan.nextLine()));
                 break;
                 case 2: 
                     System.out.println("Se desejar depositar na criação da conta digite"
@@ -132,9 +192,12 @@ public class App {
                 case 4:
                     System.out.println("Informe o numero da conta:");
                     numConta = Integer.parseInt(scan.nextLine());
-                    System.out.println("Informe o valor a ser sacado:");
+                    System.out.println("Informe o valor a ser depositado:");
                     valor = Double.parseDouble(scan.nextLine());
                     realizarDeposito(cpf, numConta, valor);
+                break;
+                case 5:
+                    consultarContas(cpf);
                 break;
                 case 6:
                     op = 0;
@@ -144,21 +207,36 @@ public class App {
     }
 
     public static void realizarDeposito(String cpf, int numConta, double valor){
-        contas.depositar(cpf, numConta, valor);
+        controllerCliente.realizarDeposito(cpf, numConta, valor, clientes);
     }
 
     public static void realizarSaque(String cpf, int numConta, double valor){
-        contas.sacar(cpf, numConta, valor);
+        controllerCliente.realizarSaque(cpf, numConta, valor, clientes);
     }
 
-    public static void verificaExtratoCliente(int numConta){
-        contas.verExtrato(numConta);
+    public static void verificaExtratoCliente(String cpf, int numConta){
+        for(var cliente: clientes){
+            if(cliente != null){
+                if(cliente.getCpf().equals(cpf)){
+                       cliente.getContas().verExtrato(numConta);                     
+                }
+            }
+        }
     }
 
     static boolean verificaCliente(String cpf){
         for(var cliente: clientes){
             if(cliente != null)
                 if(cliente.getCpf().equals(cpf))
+                    return true;
+        }
+        return false;
+    }
+
+    static boolean verificaAdmin(String cpf){
+        for(var admin: admins){
+            if(admin != null)
+                if(admin.getCpf().equals(cpf))
                     return true;
         }
         return false;
@@ -177,10 +255,49 @@ public class App {
         }
     }
 
+    static Admin[] carregarAdmins(String arquivo){
+        Admin[] adminsCarregados = new Admin[100];
+        int cont = 0;
+
+        File arquivoAdmin = new File(arquivo);
+        try(Scanner leitor = new Scanner(arquivoAdmin)){
+            while(leitor.hasNextLine()){
+                String linha = leitor.nextLine();
+                String[] linhaQuebrada = linha.split(";");
+                Admin admin = new Admin(linhaQuebrada[0], linhaQuebrada[1]);
+                adminsCarregados[cont] = admin;
+                cont++;
+            }
+        }catch(FileNotFoundException e1){
+            System.out.println("Arquivo não encontrado!" + e1.getMessage());
+        }catch(Exception e2){
+            e2.printStackTrace();
+        }
+
+        return adminsCarregados;
+    }
+
+    static void consultarContas(String cpf){
+        for(var cliente: clientes){
+            if(cliente != null)
+                if(cliente.getCpf().equals(cpf))
+                    cliente.getContas().listarComSaldoTotal();
+        }
+    }
+
     static void extrato(){
         System.out.println("Numero da conta: ");
         int numConta = Integer.parseInt(scan.nextLine());
+        System.out.println("Informe o cpf do titular: ");
+        String cpf = scan.nextLine();
 
+        for(var cliente: clientes){
+            if(cliente != null){
+                if(cliente.getCpf().equals(cpf)){
+                       cliente.getContas().verExtrato(numConta);                     
+                }
+            }
+        }
         contas.verExtrato(numConta);
     }
 
@@ -189,23 +306,51 @@ public class App {
         
         System.out.println("Informe o numero da conta: ");
         num = Integer.parseInt(scan.nextLine());
+        System.out.println("Informe o cpf do titular: ");
+        String cpf = scan.nextLine();
 
-        Conta conta = controllerContas.consulta(contas, num);
-        
-        if(conta != null){
+        try{
+            for(var cliente: clientes){
+                if(cliente != null){
+                    if(cliente.getCpf().equals(cpf)){
+                        Conta conta = cliente.getContas().consultar(num);
+                        System.out.println("Numero conta: " + conta.getNumeroConta());
+                        System.out.println("Cpf: " + conta.getCpf());
+                        System.out.println("Saldo: " + conta.getSaldo() + "\n");
+                    }
+                }
+            }
+        }catch(NotFoundAccountException e1){
+            System.out.println("Conta não encontrada!! " + e1.getMessage());
+        }
+
+       /* try{
+            Conta conta = controllerContas.consulta(contas, num);
+            
             System.out.println("Numero conta: " + conta.getNumeroConta());
             System.out.println("Cpf: " + conta.getCpf());
             System.out.println("Saldo: " + conta.getSaldo() + "\n");
-        }else{
-            System.out.println("Conta nao encontrada!!");
-        }
-        
+        }catch(NotFoundAccountException e1){
+            System.out.println(e1.getMessage());
+        }*/
     }
 
     public static void criarConta(String cpf, double saldo){
-        Conta novaConta = new Conta(controllerContas.gerarNumeroConta(100, 3.0)[0], cpf, saldo);
-        controllerContas.criarConta(contas, novaConta);
-        controllerCliente.relacionaContas(contas, clientes);
+        int numConta = controllerContas.gerarNumeroConta(100, 3.0)[0];
+        Conta novaConta = new Conta(numConta, cpf, saldo);
+        try{
+            for(var cliente: clientes){
+                if(cliente != null){
+                    if(cliente.getCpf().equals(cpf))
+                        cliente.getContas().inserir(novaConta);
+                }
+            }
+            //controllerCliente.relacionaContas(contas, clientes);
+            System.out.println("Conta criada com sucesso!\n"
+            + "Número da conta:" + numConta);
+        }catch(Exception e1){
+            System.out.println("Ocorreu uma falha ao criar a conta!" + e1.getMessage());
+        }
     }
 
 
@@ -213,6 +358,7 @@ public class App {
         int conta;
         String cp;
         double sal;
+        boolean achou = false;
                 
         conta = controllerContas.gerarNumeroConta(100, 3.0)[0];
         System.out.println("Informe seu Cpf: ");
@@ -220,9 +366,38 @@ public class App {
         System.out.println("Deseja depositar durante a criação? se não digite zero, se sim informe o valor: ");
         sal = Double.parseDouble(scan.nextLine());
 
-        Conta novaConta = new Conta(conta, cp, sal);
-        controllerContas.criarConta(contas, novaConta);
-        controllerCliente.relacionaContas(contas, clientes);
+        try{
+            Conta novaConta = new Conta(conta, cp, sal);
+            for(var cliente: clientes){
+                if(cliente != null){
+                    if(cliente.getCpf().equals(cp)){
+                        cliente.getContas().inserir(novaConta);
+                        achou = true;
+                        System.out.println("Conta criada com sucesso!\n"
+                        +"Número da conta:" + conta);
+                    }
+                }
+                //controllerCliente.relacionaContas(contas, clientes);
+            }
+
+            if(!achou){          
+                System.out.println("Não existe cliente cadastrado com esse cpf,"
+                + " informe seu nome para criação da conta: ");
+                try{
+                    String nome = scan.nextLine();
+                    Cliente novoCliente = new Cliente(cp, nome);
+                    novoCliente.getContas().inserir(novaConta);
+                    clientes[controllerCliente.getCont()] = novoCliente;
+                    System.out.println("Conta criada com sucesso!\n"
+                    +"Número da conta:" + conta);
+                }catch(Exception e1){
+                    System.out.println("Ocorreu um erro durante a criacao do cliente!" + e1.getMessage());
+                }
+            }              
+        }catch(Exception e1){
+            System.out.println("Ocorreu uma falha ao criar a conta!");
+            e1.printStackTrace();
+        }
     }
 
 

@@ -6,6 +6,7 @@ import java.util.Random;
 
 import lista.ListaConta;
 import data.Data;
+import exception.NotFoundAccountException;
 
 public class ControleConta {
 
@@ -14,6 +15,10 @@ public class ControleConta {
     private String arquivoNome = null;
 
     private int cont = 0;
+
+    public int getCont(){
+        return this.cont;
+    }
 
     public ListaConta chargeContas(String path){
         ListaConta contas = new ListaConta();
@@ -128,7 +133,7 @@ public class ControleConta {
         contas.executarOperacoes(contas);
     }
 
-    public Conta consulta(ListaConta contas, int num){
+    public Conta consulta(ListaConta contas, int num) throws NotFoundAccountException{
         Conta conta = null;
 
         conta = contas.consultar(num);
