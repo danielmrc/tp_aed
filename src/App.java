@@ -139,6 +139,8 @@ public class App {
                     break;
                 }
             }while(op != 0);
+        }else{
+            System.out.println("Cpf não pertence a um Administrador!");
         }
     }
 

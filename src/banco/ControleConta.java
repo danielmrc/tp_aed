@@ -21,6 +21,7 @@ public class ControleConta {
     }
 
     public ListaConta chargeContas(String path){
+        System.out.println("Aguarde, estamos carregando o arquivo de contas...");
         ListaConta contas = new ListaConta();
 
         String line;
@@ -32,7 +33,7 @@ public class ControleConta {
         try(Scanner scan = new Scanner(file)){
             //numeroContas = Integer.parseInt(scan.next());
             while(scan.hasNextLine()){
-                line = scan.next();
+                line = scan.nextLine();
                 if(!line.isBlank() || !line.equals("")){
                     breakString = line.split(";");
                     contas.inserir(new Conta(
@@ -49,6 +50,8 @@ public class ControleConta {
         }catch(Exception e2){
             e2.printStackTrace();
         }
+
+        System.out.println("Arquivo de contas carregado!!");
         return contas;
     }
 
@@ -143,6 +146,7 @@ public class ControleConta {
 
 
     public Operacao[] chargeOperacao(String path){
+        System.out.println("Aguarde, estamos carregando o arquivo de operações...");
         Operacao[] operacoes = null;
 
         int contador = 0;
@@ -161,7 +165,7 @@ public class ControleConta {
             numeroOperacoes = Integer.parseInt(scan.next());
             operacoes = new Operacao[numeroOperacoes];
             while(scan.hasNextLine()){
-                line = scan.next();
+                line = scan.nextLine();
                 if(!line.isBlank() || !line.equals("")){
                     breakString = line.split(";");
                     breakData = breakString[3].split("/");
@@ -181,6 +185,7 @@ public class ControleConta {
         }catch(Exception e2){
             e2.printStackTrace();
         }
+        System.out.println("Arquivo de operações carregado!!");
         return operacoes;
     }
 

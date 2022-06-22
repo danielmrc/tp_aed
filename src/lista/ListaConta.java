@@ -130,15 +130,18 @@ public class ListaConta {
 
 
     public void relacionaOperacoes(ListaConta contas,Operacao[] operacoes){
+        System.out.println("Aguarde, estamos relacionando as operações às suas contas...");
         ElementoConta auxConta = primeiro;
         
         while(auxConta.getProximo() != null){
             for(var operacao: operacoes){
-                if(operacao.getNumConta() == auxConta.getProximo().getDado().getNumeroConta())
-                    auxConta.getProximo().getDado().getOperacoes().inserir(operacao);
+                if(operacao != null)
+                    if(operacao.getNumConta() == auxConta.getProximo().getDado().getNumeroConta())
+                        auxConta.getProximo().getDado().getOperacoes().inserir(operacao);
             }
             auxConta = auxConta.getProximo();
         }
+        System.out.println("Relacionamento de operações com contas finalizada!!");
     }
 
     public void sacar(String cpf, int numConta, double valor) throws NotFoundAccountException{

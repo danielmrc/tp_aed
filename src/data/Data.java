@@ -15,7 +15,7 @@ public class Data {
     }
 
     public Data(int dia, int mes, int ano){
-        if(dias[mes] >= dia)
+        if(dias[mes -1] >= dia)
             this.dia = dia;
             else
                 System.out.println("Dia inválido para o mês!!");

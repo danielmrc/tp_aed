@@ -48,11 +48,17 @@ public class Conta{
     }
 
     public void sacar(double valor){
-        this.saldo = this.saldo - valor;
+        if(valor <= saldo)
+            this.saldo = this.saldo - valor;
+            else
+                System.out.println("Saldo insuficiente para saque!!");
     }
 
     public void depositar(double valor){
-        this.saldo = this.saldo + valor;
+        if(!(valor < 0))
+            this.saldo = this.saldo + valor;
+            else
+                System.out.println("Não é possível depositar um valor negativo!");
     }
 
     public void setOperacoes(FilaOperacao operacoes){

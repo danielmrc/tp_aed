@@ -18,6 +18,7 @@ public class ControleCliente {
     }
 
     public Cliente[] chargeClientes(String path){
+        System.out.println("Aguarde, estamos carregando o arquivo de clientes...");
         Cliente[] clientes = null;
 
         String line;
@@ -45,14 +46,18 @@ public class ControleCliente {
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        System.out.println("Arquivo de clientes carregado!!");
     return clientes;
 }
     
     public void relacionaContas(ListaConta contas, Cliente[] clientes){
+        System.out.println("Aguarde, relacionando contas aos clientes...");
         for(var cliente: clientes){
             if(cliente != null)
                 cliente.setContas(contas.buscaContasCliente(cliente.getCpf()));
         }
+        System.out.println("Relação de contas com clientes finalizada!!");
     }
 
     public void maiorSaldo(Cliente[] clientes){
@@ -61,9 +66,11 @@ public class ControleCliente {
 
         for(var cliente: clientes){
             if(cliente != null){
-                if(cliente.getContas().getContaMaiorSaldo().getSaldo() > maior){
-                    maior = cliente.getContas().getContaMaiorSaldo().getSaldo();
-                    aux = cliente.getContas().getContaMaiorSaldo();
+                if(cliente.getContas() != null && cliente.getContas().getContaMaiorSaldo() != null){
+                    if(cliente.getContas().getContaMaiorSaldo().getSaldo() > maior){
+                        maior = cliente.getContas().getContaMaiorSaldo().getSaldo();
+                        aux = cliente.getContas().getContaMaiorSaldo();
+                    }
                 }
             }
         }
@@ -125,17 +132,21 @@ public class ControleCliente {
         int cont = 0;
 
         for(var cliente: clientes){
-            if(cliente != null)
-                if(cont < 10)
+            if(cliente != null){
+                if(cont < 10){
                     dezMaioresSaldos[cont] = cliente;
-                    else{
-                        for(int i = 0; i < 10; i++){
-                            if(cliente.getContas().somaSaldoDasContas() 
-                            > dezMaioresSaldos[i].getContas().somaSaldoDasContas())
-                                dezMaioresSaldos[i] = cliente;
+                }else{
+                    int aux = Integer.MAX_VALUE;
+                    for(int i = 0; i < 10; i++){
+                        if(cliente.getContas().somaSaldoDasContas() 
+                        > dezMaioresSaldos[i].getContas().somaSaldoDasContas())
+                            aux = i;
                         }
+                        if(aux != Integer.MAX_VALUE)
+                            dezMaioresSaldos[aux] = cliente;
                     }
                 cont++;
+            }
         }
 
         System.out.println("Os dez clientes com maior saldo são: ");
