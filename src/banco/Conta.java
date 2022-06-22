@@ -16,11 +16,18 @@ public class Conta{
         this.operacoes = new FilaOperacao();
     }
 
-    public Conta(int numeroC, String c, double s){
+    public Conta(int numeroC, String cpf, double s){
         this.numeroConta = numeroC;
-        this.cpf = c;
+        this.cpf = cpf;
         this.saldo = s;
         this.operacoes = new FilaOperacao();
+    }
+
+    public Conta(int numeroC, String cpf, double s, FilaOperacao fo){
+        this.numeroConta = numeroC;
+        this.cpf = cpf;
+        this.saldo = s;
+        this.operacoes = fo;
     }
 
     public int getNumeroConta(){

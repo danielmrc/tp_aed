@@ -29,6 +29,15 @@ public class FilaOperacao {
         return auxRetirada.getDado();
     }
 
+    public boolean ehDessaConta(int numConta){
+        ElementoOperacao aux = primeiro;
+
+        if(aux.getProximo().getDado().getNumConta() == numConta)
+            return true;
+            else 
+                return false;
+    }
+
     public void extrato(int numConta){
         ElementoOperacao auxOperacao = primeiro;
         

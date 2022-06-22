@@ -28,6 +28,17 @@ public class ListaConta {
         this.ultimo = novo;
     }
 
+
+    public boolean ehDesseCliente(String cpf){
+        ElementoConta aux = primeiro;
+
+        if(aux.getProximo().getDado().getCpf().equals(cpf))
+            return true;
+            else 
+                return false;
+    }
+
+
     public Conta retirar(int numConta){
         ElementoConta aux = primeiro;
         while(aux.getProximo() != null){
@@ -47,22 +58,37 @@ public class ListaConta {
         return null;
     }
 
-    public Conta consultar(int numConta) throws NotFoundAccountException{
+    public ListaConta retirarListaContaCliente(String cpf){
         ElementoConta aux = primeiro;
-        boolean achou = false;
+        ListaConta contas = new ListaConta();
+        while(aux.getProximo() != null){
+            aux = aux.getProximo();
+            if(aux == ultimo && aux.getDado().getCpf().equals(cpf)){
+                aux.getAnterior().setProximo(null);
+                ultimo = aux.getAnterior();
+                aux.setAnterior(null);
+                contas.inserir(aux.getDado());        
+            }else if(aux.getDado().getCpf().equals(cpf)){
+                aux.getAnterior().setProximo(aux.getProximo());
+                aux.getProximo().setAnterior(aux.getAnterior());
+                contas.inserir(aux.getDado());
+            }              
+        }
+
+        return contas;
+    }
+
+
+    public Conta consultar(int numConta) {
+        ElementoConta aux = primeiro;
 
         while(aux.getProximo() != null){
             aux = aux.getProximo();
             if(aux.getDado() != null){
-                if(aux.getDado().getNumeroConta() == numConta){
-                    achou = true;
+                if(aux.getDado().getNumeroConta() == numConta)
                     return aux.getDado();
-                }
             }
         }
-
-        if(!achou)
-            throw new NotFoundAccountException();
 
         return null;
     }

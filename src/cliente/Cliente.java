@@ -22,7 +22,7 @@ public class Cliente {
     public Cliente(String cpf, String nome, ListaConta contas){
         this.cpf = cpf;
         this.nome = nome;
-        this.contas = new ListaConta();
+        this.contas = contas;
     }
 
     public void setCpf(String cpf){

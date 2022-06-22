@@ -86,8 +86,10 @@ public class ControleCliente {
 
         for(var cliente: clientes){
             if(cliente != null){
-                saldoTotal += cliente.getContas().somaSaldoDasContas();
-                contCliente++;
+                if(cliente.getContas() != null){
+                    saldoTotal += cliente.getContas().somaSaldoDasContas();
+                    contCliente++;
+                }
             }
         }
 
@@ -132,13 +134,13 @@ public class ControleCliente {
         int cont = 0;
 
         for(var cliente: clientes){
-            if(cliente != null){
+            if(cliente != null && cliente.getContas() != null){
                 if(cont < 10){
                     dezMaioresSaldos[cont] = cliente;
                 }else{
                     int aux = Integer.MAX_VALUE;
                     for(int i = 0; i < 10; i++){
-                        if(cliente.getContas().somaSaldoDasContas() 
+                        if(cliente.getContas()!= null && cliente.getContas().somaSaldoDasContas() 
                         > dezMaioresSaldos[i].getContas().somaSaldoDasContas())
                             aux = i;
                         }
@@ -150,9 +152,9 @@ public class ControleCliente {
         }
 
         System.out.println("Os dez clientes com maior saldo são: ");
-        for(var cliente: dezMaioresSaldos){
-            System.out.println(cliente.getNome());
-            System.out.println("Saldo total R$" + cliente.getContas().somaSaldoDasContas());
+        for(int i = dezMaioresSaldos.length -1;i >= 0; i--){
+            System.out.println(dezMaioresSaldos[i].getNome());
+            System.out.println("Saldo total R$" + dezMaioresSaldos[i].getContas().somaSaldoDasContas());
             System.out.println("-------------------------------------------");
         }
 
