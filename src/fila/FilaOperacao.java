@@ -22,11 +22,29 @@ public class FilaOperacao {
 
     public Operacao retirar(){
         ElementoOperacao auxRetirada = primeiro.getProximo();
-        primeiro.setProximo(primeiro.getProximo().getProximo());
+        
+        if(auxRetirada != null){
+            if(primeiro.getProximo().getProximo() != null){
+                primeiro.setProximo(primeiro.getProximo().getProximo());
+                this.ultimo = primeiro.getProximo();
+                auxRetirada.setProximo(null);
+                return auxRetirada.getDado();
+            }else{ 
+                primeiro.setProximo(null);
+                this.ultimo = primeiro;
+                return auxRetirada.getDado();
+            }
+        }
+        return null;
+    }
 
-        auxRetirada.setProximo(null);
+    public boolean ehDessaConta(int numConta){
+        ElementoOperacao aux = primeiro;
 
-        return auxRetirada.getDado();
+        if(aux.getProximo().getDado().getNumConta() == numConta)
+            return true;
+            else 
+                return false;
     }
 
     public void extrato(int numConta){
@@ -43,7 +61,6 @@ public class FilaOperacao {
                     default: System.out.println("Código de operação desconhecido!!");
                     break;
                 }
-                System.out.println("Numero da conta: " + auxOperacao.getProximo().getDado().getNumConta());
                 System.out.println("Valor: " + auxOperacao.getProximo().getDado().getValor());
                 System.out.println("Data: " + auxOperacao.getProximo().getDado().getData().getData() + "\n\n");
             }

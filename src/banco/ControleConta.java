@@ -1,12 +1,8 @@
 package banco;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Random;
 
 import lista.ListaConta;
-import fila.FilaOperacao;
-import data.Data;
+import exception.NotFoundAccountException;
 
 public class ControleConta {
 
@@ -16,39 +12,9 @@ public class ControleConta {
 
     private int cont = 0;
 
-    public ListaConta chargeContas(String path){
-        ListaConta contas = new ListaConta();
-
-        String line;
-        File file = new File(path);
-        String[] breakString = new String[3];
-        int numeroContas;
-
-        arquivoNome = path;
-
-        try(Scanner scan = new Scanner(file)){
-            //numeroContas = Integer.parseInt(scan.next());
-            while(scan.hasNextLine()){
-                line = scan.next();
-                if(!line.isBlank() || !line.equals("")){
-                    breakString = line.split(";");
-                    contas.inserir(new Conta(
-                        Integer.parseInt(breakString[0]),
-                        breakString[1],
-                        Double.parseDouble(breakString[2])
-                    ));
-                    
-                    cont++;
-                }
-            }            
-        }catch(FileNotFoundException e1){
-            System.out.println("Arquivo não encontrado!!");
-        }catch(Exception e2){
-            e2.printStackTrace();
-        }
-        return contas;
+    public int getCont(){
+        return this.cont;
     }
-
 
     public void gerarRelatorio(ListaConta contas){
         contas.listar();
@@ -126,57 +92,12 @@ public class ControleConta {
         return part;
     }
 
-
-    public Conta buscaConta(ListaConta contas, int num){
+    public Conta consulta(ListaConta contas, int num) throws NotFoundAccountException{
         Conta conta = null;
 
-        conta = contas.retirar(num);
+        conta = contas.consultar(num);
 
         return conta;
     }
-
-
-    public Operacao[] chargeOperacao(String path){
-        Operacao[] operacoes = null;
-
-        int contador = 0;
-
-        Data data;
-
-        String line;
-        File file = new File(path);
-        String[] breakString = new String[4];
-        String[] breakData = new String[3];
-        int numeroOperacoes;
-
-        arquivoNome = path;
-
-        try(Scanner scan = new Scanner(file)){
-            numeroOperacoes = Integer.parseInt(scan.next());
-            operacoes = new Operacao[numeroOperacoes];
-            while(scan.hasNextLine()){
-                line = scan.next();
-                if(!line.isBlank() || !line.equals("")){
-                    breakString = line.split(";");
-                    breakData = breakString[3].split("/");
-                    data = new Data(Integer.parseInt(breakData[0]), Integer.parseInt(breakData[1]), Integer.parseInt(breakData[2]));
-                    operacoes[contador] = new Operacao(
-                        Integer.parseInt(breakString[0]),
-                        Integer.parseInt(breakString[1]),
-                        Double.parseDouble(breakString[2]),
-                        data                        
-                    );
-                    
-                    contador++;
-                }
-            }            
-        }catch(FileNotFoundException e1){
-            System.out.println("Arquivo não encontrado!!");
-        }catch(Exception e2){
-            e2.printStackTrace();
-        }
-        return operacoes;
-    }
-
     
 }

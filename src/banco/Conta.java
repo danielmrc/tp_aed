@@ -16,11 +16,18 @@ public class Conta{
         this.operacoes = new FilaOperacao();
     }
 
-    public Conta(int numeroC, String c, double s){
+    public Conta(int numeroC, String cpf, double s){
         this.numeroConta = numeroC;
-        this.cpf = c;
+        this.cpf = cpf;
         this.saldo = s;
         this.operacoes = new FilaOperacao();
+    }
+
+    public Conta(int numeroC, String cpf, double s, FilaOperacao fo){
+        this.numeroConta = numeroC;
+        this.cpf = cpf;
+        this.saldo = s;
+        this.operacoes = fo;
     }
 
     public int getNumeroConta(){
@@ -48,11 +55,21 @@ public class Conta{
     }
 
     public void sacar(double valor){
-        this.saldo = this.saldo - valor;
+        if(valor <= saldo){
+            this.saldo = this.saldo - valor;
+            System.out.println("Saque realizado com sucesso!!");
+        }else{
+            System.out.println("Saldo insuficiente para saque!!");
+        }
     }
 
     public void depositar(double valor){
-        this.saldo = this.saldo + valor;
+        if(!(valor < 0)){
+            this.saldo = this.saldo + valor;
+            System.out.println("Depósito realizado com sucesso!");
+        }else{
+            System.out.println("Não é possível depositar um valor negativo!");
+        }
     }
 
     public void setOperacoes(FilaOperacao operacoes){

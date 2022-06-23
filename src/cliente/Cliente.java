@@ -10,12 +10,13 @@ public class Cliente {
     public Cliente(){
         this.cpf = null;
         this.nome = null;
-        this.contas = null;
+        this.contas = new ListaConta();
     }
 
     public Cliente(String cpf, String nome){
         this.cpf = cpf;
         this.nome = nome;
+        this.contas = new ListaConta();
     }
 
     public Cliente(String cpf, String nome, ListaConta contas){
