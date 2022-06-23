@@ -19,7 +19,7 @@ public class Hash {
     public int codigo(int conta){
         int cod = 0;
         
-        cod = (conta * 100);
+        cod = conta * 10;
 
         return cod;
     }

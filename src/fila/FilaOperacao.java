@@ -22,11 +22,20 @@ public class FilaOperacao {
 
     public Operacao retirar(){
         ElementoOperacao auxRetirada = primeiro.getProximo();
-        primeiro.setProximo(primeiro.getProximo().getProximo());
-
-        auxRetirada.setProximo(null);
-
-        return auxRetirada.getDado();
+        
+        if(auxRetirada != null){
+            if(primeiro.getProximo().getProximo() != null){
+                primeiro.setProximo(primeiro.getProximo().getProximo());
+                this.ultimo = primeiro.getProximo();
+                auxRetirada.setProximo(null);
+                return auxRetirada.getDado();
+            }else{ 
+                primeiro.setProximo(null);
+                this.ultimo = primeiro;
+                return auxRetirada.getDado();
+            }
+        }
+        return null;
     }
 
     public boolean ehDessaConta(int numConta){

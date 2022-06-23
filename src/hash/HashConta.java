@@ -18,14 +18,17 @@ public class HashConta {
  
     public int codigo(String cpf){
         int cod = 0;
+        String aux = "";
        
         for(int i = 0; i < cpf.length(); i ++){
             int num = Character.getNumericValue(cpf.charAt(i));
             if(num > 0)
-                cod += num;
+                aux += Integer.toString(num);
         }
 
-        return cod;
+        cod = Integer.parseInt(aux);
+
+        return cod * 11;
     }
 
 

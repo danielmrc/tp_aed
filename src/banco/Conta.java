@@ -55,17 +55,21 @@ public class Conta{
     }
 
     public void sacar(double valor){
-        if(valor <= saldo)
+        if(valor <= saldo){
             this.saldo = this.saldo - valor;
-            else
-                System.out.println("Saldo insuficiente para saque!!");
+            System.out.println("Saque realizado com sucesso!!");
+        }else{
+            System.out.println("Saldo insuficiente para saque!!");
+        }
     }
 
     public void depositar(double valor){
-        if(!(valor < 0))
+        if(!(valor < 0)){
             this.saldo = this.saldo + valor;
-            else
-                System.out.println("Não é possível depositar um valor negativo!");
+            System.out.println("Depósito realizado com sucesso!");
+        }else{
+            System.out.println("Não é possível depositar um valor negativo!");
+        }
     }
 
     public void setOperacoes(FilaOperacao operacoes){

@@ -379,7 +379,7 @@ public class App {
                     String nome = scan.nextLine();
                     Cliente novoCliente = new Cliente(cp, nome);
                     novoCliente.getContas().inserir(novaConta);
-                    clientes[controllerCliente.getCont()] = novoCliente;
+                    clientes[ControlerGeral.getQuantidadeClientes()] = novoCliente;
                     System.out.println("Conta criada com sucesso!\n"
                     +"Número da conta:" + conta);
                 }catch(Exception e1){

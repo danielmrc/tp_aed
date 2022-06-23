@@ -15,8 +15,6 @@ public class ControlerGeral {
 
     public static int contCliente = 0;
 
-    public static int contOperacoes = 0;
-
     public static Hash operacoes;
 
     public static HashConta contasHash;
@@ -28,13 +26,22 @@ public class ControlerGeral {
         initContas(nomeArquivo[0]);
         clientes = initClientes(nomeArquivo[1]);
 
+        for(var cliente: clientes){
+            if(cliente != null && cliente.getContas() != null)
+                cliente.getContas().executarOperacoes();
+        }
+
+
         return clientes;
+    }
+
+    public static int getQuantidadeClientes(){
+        return contCliente;
     }
 
     private Cliente[] initClientes(String path){
         System.out.println("Aguarde, estamos carregando o arquivo de clientes...");
         Cliente[] clientes = null;
-        int cont = 0;
 
         String line;
         File file = new File(path);
@@ -49,13 +56,13 @@ public class ControlerGeral {
                 if(!line.isBlank() || !line.equals("")){
                     breakString = line.split(";");
                     String cpf = breakString[0];
-                    clientes[cont] = new Cliente(
+                    clientes[contCliente] = new Cliente(
                         cpf,
                         breakString[1],
                         contasHash.retirar(cpf)
                     );
                     
-                    cont++;
+                    contCliente++;
                 }
             }            
         }catch(FileNotFoundException e){
@@ -76,7 +83,7 @@ public class ControlerGeral {
         String[] breakString = new String[3];
 
         try(Scanner scan = new Scanner(file)){
-            contasHash = new HashConta(Integer.parseInt(scan.next()));
+            contasHash = new HashConta(Integer.parseInt(scan.next()) + 10000);
             while(scan.hasNextLine()){
                 line = scan.nextLine();
                 if(!line.isBlank() || !line.equals("")){

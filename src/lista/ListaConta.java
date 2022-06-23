@@ -265,7 +265,7 @@ public class ListaConta {
         return saldoTotal;
     }
 
-    public void executarOperacoes(ListaConta contas){
+    public void executarOperacoes(){
         ElementoConta auxConta = primeiro;
         
         while(auxConta.getProximo() != null){
